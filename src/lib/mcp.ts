@@ -6,9 +6,8 @@ export interface MCPToolResponse {
 
 export async function callModelConverterTool(toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    // Get the base URL from window.location or use default
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const response = await fetch(`${baseUrl}/api/mcp`, {
+    // Call our Next.js API route which will handle the MCP server communication
+    const response = await fetch('/api/mcp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,12 +19,11 @@ export async function callModelConverterTool(toolName: string, args: any): Promi
       }),
     });
 
-    const data = await response.json();
-    
     if (!response.ok) {
-      throw new Error(data.error || `HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error('Error using model converter:', error);

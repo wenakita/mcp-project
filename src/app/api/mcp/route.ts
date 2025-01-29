@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     if (!serverName || !toolName) {
       return NextResponse.json(
-        { error: 'Missing required parameters' },
+        { success: false, error: 'Missing required parameters' },
         { status: 400 }
       )
     }
@@ -18,13 +18,16 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('MCP API error:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unknown error occurred' },
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      },
       { status: 500 }
     )
   }
 }
 
-// Handle preflight requests
+// Enable CORS
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
