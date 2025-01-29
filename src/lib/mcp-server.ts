@@ -6,21 +6,17 @@ interface MCPToolResponse {
 
 export async function use_mcp_tool(serverName: string, toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    // Get the MCP server URL from environment variable or use default
-    const mcpServerUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}/api/mcp`
-      : 'http://localhost:3000/api/mcp';
+    // Get MCP server configuration from environment variables
+    const host = process.env.MCP_SERVER_HOST || '127.0.0.1';
+    const port = process.env.MCP_SERVER_PORT || '3000';
+    const mcpServerUrl = `http://${host}:${port}/mcp/${serverName}/${toolName}`;
 
     const response = await fetch(mcpServerUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        serverName,
-        toolName,
-        args
-      }),
+      body: JSON.stringify(args),
     });
 
     if (!response.ok) {
@@ -28,7 +24,10 @@ export async function use_mcp_tool(serverName: string, toolName: string, args: a
     }
 
     const data = await response.json();
-    return data;
+    return {
+      success: true,
+      data,
+    };
   } catch (error) {
     console.error('Error using MCP tool:', error);
     return {
