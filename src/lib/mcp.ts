@@ -6,9 +6,8 @@ export interface MCPToolResponse {
 
 export async function callModelConverterTool(toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    // Use environment variable for API URL or fallback to relative path
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-    const response = await fetch(`${apiUrl}/mcp`, {
+    // Use relative path for API endpoint
+    const response = await fetch('/api/mcp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

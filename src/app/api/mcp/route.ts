@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { use_mcp_tool } from '@/lib/mcp-server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,8 +12,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const result = await use_mcp_tool(serverName, toolName, args)
-    return NextResponse.json(result)
+    // For now, return a mock response since MCP server is local-only
+    return NextResponse.json({
+      success: true,
+      data: {
+        message: 'This is a mock response. The MCP server is only available in local development.',
+        requestedServer: serverName,
+        requestedTool: toolName,
+        providedArgs: args
+      }
+    })
   } catch (error) {
     console.error('MCP API error:', error)
     return NextResponse.json(
