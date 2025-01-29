@@ -6,12 +6,16 @@ interface MCPToolResponse {
 
 export async function use_mcp_tool(serverName: string, toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    const response = await fetch(`${serverName}/api/tools/${toolName}`, {
+    const response = await fetch('/api/mcp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(args),
+      body: JSON.stringify({
+        serverName,
+        toolName,
+        args
+      }),
     });
 
     if (!response.ok) {
