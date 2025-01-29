@@ -44,24 +44,24 @@ export default function OptimizerLandingPage() {
             <h2 className="text-2xl font-semibold mb-4">How to Use</h2>
             <div className="space-y-4 text-gray-300">
               <div>
-                <h3 className="text-xl font-semibold mb-2">1. Prepare Your Model</h3>
-                <p>Have your GLTF/GLB file ready for optimization.</p>
+                <h3 className="text-xl font-semibold mb-2">1. Upload Model</h3>
+                <p>Upload your GLTF or GLB file that you want to optimize.</p>
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">2. Choose Options</h3>
-                <p>Select which optimizations to apply:</p>
+                <p>Select optimization options:</p>
                 <ul className="list-disc list-inside ml-4 mt-2">
-                  <li>Draco compression for geometry</li>
-                  <li>Mesh simplification for reduced complexity</li>
+                  <li>Enable Draco compression</li>
+                  <li>Apply mesh simplification</li>
                 </ul>
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">3. Optimize</h3>
-                <p>Run the optimization process and download your optimized model.</p>
+                <p>Click optimize and let our tool process your model.</p>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">4. Verify</h3>
-                <p>Check the optimization results and file size reduction.</p>
+                <h3 className="text-xl font-semibold mb-2">4. Download</h3>
+                <p>Download your optimized model with reduced file size.</p>
               </div>
             </div>
           </div>

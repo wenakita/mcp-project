@@ -53,7 +53,7 @@ export default function ViewerLandingPage() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">3. Analyze</h3>
-                <p>Run the analysis to get detailed information about your model:</p>
+                <p>Get detailed information about your model:</p>
                 <ul className="list-disc list-inside ml-4 mt-2">
                   <li>Vertex and face counts</li>
                   <li>Material usage</li>
