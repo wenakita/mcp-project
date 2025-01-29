@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { use_mcp_tool } from '@/lib/mcp'
+import { use_mcp_tool } from '@/lib/mcp-server'
 
 export async function POST(request: NextRequest) {
   try {
