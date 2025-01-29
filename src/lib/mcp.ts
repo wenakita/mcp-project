@@ -6,7 +6,9 @@ export interface MCPToolResponse {
 
 export async function callModelConverterTool(toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    const response = await fetch('/api/mcp', {
+    // Get the base URL from window.location or use default
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const response = await fetch(`${baseUrl}/api/mcp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
