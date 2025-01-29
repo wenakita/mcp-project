@@ -1,22 +1,21 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
+import './globals.css'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'MCP Model Converter Tools',
-  description: 'Convert, optimize, and analyze 3D models with ease',
-};
+  title: 'MCP Tools',
+  description: 'Model Context Protocol Tools',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
+        {children}
+      </body>
     </html>
-  );
+  )
 }
