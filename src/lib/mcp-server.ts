@@ -6,8 +6,8 @@ interface MCPToolResponse {
 
 export async function use_mcp_tool(serverName: string, toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    const mcpServerUrl = process.env.MCP_SERVER_URL || 'http://localhost:3000';
-    const response = await fetch(`${mcpServerUrl}/mcp/${serverName}/${toolName}`, {
+    // For server-side MCP calls, we need to connect to the local MCP server
+    const response = await fetch(`http://127.0.0.1:3000/mcp/${serverName}/${toolName}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
