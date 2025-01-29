@@ -6,8 +6,9 @@ export interface MCPToolResponse {
 
 export async function callModelConverterTool(toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    // Call our Next.js API route which will handle the MCP server communication
-    const response = await fetch('/api/mcp', {
+    // Use environment variable for API URL or fallback to relative path
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    const response = await fetch(`${apiUrl}/mcp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
