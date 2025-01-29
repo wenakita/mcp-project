@@ -1,11 +1,12 @@
 import './globals.css';
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: 'MCP Inspector',
-  description: 'Model Context Protocol Inspector and Tools',
+export const metadata: Metadata = {
+  title: 'MCP Model Converter Tools',
+  description: 'Convert, optimize, and analyze 3D models with ease',
 };
 
 export default function RootLayout({
