@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG to GLTF Converter</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #debug {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            font-family: monospace;
+            z-index: 1000;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="debug">Loading...</div>
+    <script>
+        // Redirect console.log to debug div
+        const debugDiv = document.getElementById('debug');
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function() {
+            debugDiv.innerHTML += '<br>' + Array.from(arguments).join(' ');
+            originalConsoleLog.apply(console, arguments);
+        };
+        
+        console.error = function() {
+            debugDiv.innerHTML += '<br><span style="color: red">' + Array.from(arguments).join(' ') + '</span>';
+            originalConsoleError.apply(console, arguments);
+        };
+    </script>
+    <script type="module" src="convert-svg-to-gltf.js"></script>
+</body>
+</html> 
