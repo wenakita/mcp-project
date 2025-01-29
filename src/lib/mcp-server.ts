@@ -6,13 +6,21 @@ interface MCPToolResponse {
 
 export async function use_mcp_tool(serverName: string, toolName: string, args: any): Promise<MCPToolResponse> {
   try {
-    // For server-side MCP calls, we need to connect to the local MCP server
-    const response = await fetch(`http://127.0.0.1:3000/mcp/${serverName}/${toolName}`, {
+    // Get the MCP server URL from environment variable or use default
+    const mcpServerUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}/api/mcp`
+      : 'http://localhost:3000/api/mcp';
+
+    const response = await fetch(mcpServerUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(args),
+      body: JSON.stringify({
+        serverName,
+        toolName,
+        args
+      }),
     });
 
     if (!response.ok) {
@@ -20,10 +28,7 @@ export async function use_mcp_tool(serverName: string, toolName: string, args: a
     }
 
     const data = await response.json();
-    return {
-      success: true,
-      data,
-    };
+    return data;
   } catch (error) {
     console.error('Error using MCP tool:', error);
     return {
