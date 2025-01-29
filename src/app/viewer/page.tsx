@@ -82,6 +82,11 @@ export default function ViewerPage() {
     }
   }
 
+  const formatFileSize = (bytes: number | undefined) => {
+    if (typeof bytes === 'undefined') return 'N/A'
+    return `${(bytes / 1024 / 1024).toFixed(2)} MB`
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-16">
@@ -138,34 +143,34 @@ export default function ViewerPage() {
                     <dl className="grid grid-cols-2 gap-4">
                       <div>
                         <dt className="text-gray-400">Vertices</dt>
-                        <dd>{result.data?.stats.vertices.toLocaleString()}</dd>
+                        <dd>{result.data?.stats.vertices.toLocaleString() ?? 'N/A'}</dd>
                       </div>
                       <div>
                         <dt className="text-gray-400">Faces</dt>
-                        <dd>{result.data?.stats.faces.toLocaleString()}</dd>
+                        <dd>{result.data?.stats.faces.toLocaleString() ?? 'N/A'}</dd>
                       </div>
                       <div>
                         <dt className="text-gray-400">Materials</dt>
-                        <dd>{result.data?.stats.materials}</dd>
+                        <dd>{result.data?.stats.materials ?? 'N/A'}</dd>
                       </div>
                       <div>
                         <dt className="text-gray-400">Textures</dt>
-                        <dd>{result.data?.stats.textures}</dd>
+                        <dd>{result.data?.stats.textures ?? 'N/A'}</dd>
                       </div>
                       <div>
                         <dt className="text-gray-400">Animations</dt>
-                        <dd>{result.data?.stats.animations}</dd>
+                        <dd>{result.data?.stats.animations ?? 'N/A'}</dd>
                       </div>
                       <div>
                         <dt className="text-gray-400">File Size</dt>
-                        <dd>{(result.data?.stats.fileSize / 1024 / 1024).toFixed(2)} MB</dd>
+                        <dd>{formatFileSize(result.data?.stats.fileSize)}</dd>
                       </div>
                     </dl>
                   </div>
 
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Performance</h3>
-                    <p className="text-gray-300">{result.data?.analysis.performance}</p>
+                    <p className="text-gray-300">{result.data?.analysis.performance ?? 'No performance data available'}</p>
                   </div>
 
                   <div>
@@ -173,7 +178,7 @@ export default function ViewerPage() {
                     <ul className="list-disc list-inside text-gray-300">
                       {result.data?.analysis.recommendations.map((rec, index) => (
                         <li key={index}>{rec}</li>
-                      ))}
+                      )) ?? <li>No recommendations available</li>}
                     </ul>
                   </div>
                 </div>
