@@ -1,197 +1,71 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stage } from '@react-three/drei'
-import { useGLTF } from '@react-three/drei'
 
-interface ModelStats {
-  vertices: number
-  faces: number
-  materials: number
-  textures: number
-  animations: number
-  fileSize: number
-}
-
-interface ViewerResult {
-  success: boolean
-  data?: {
-    stats: ModelStats
-    analysis: {
-      performance: string
-      recommendations: string[]
-    }
-  }
-  error?: string
-}
-
-function Model({ url }: { url: string }) {
-  const { scene } = useGLTF(url)
-  return <primitive object={scene} />
-}
-
-export default function ViewerPage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [modelUrl, setModelUrl] = useState<string>('')
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<ViewerResult | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
-    if (selectedFile && (
-      selectedFile.name.toLowerCase().endsWith('.gltf') ||
-      selectedFile.name.toLowerCase().endsWith('.glb')
-    )) {
-      setFile(selectedFile)
-      setResult(null)
-
-      // Create object URL for the model
-      const url = URL.createObjectURL(selectedFile)
-      setModelUrl(url)
-
-      // Analyze the model
-      await analyzeModel(selectedFile)
-    } else {
-      alert('Please select a GLTF or GLB file')
-    }
-  }
-
-  const analyzeModel = async (modelFile: File) => {
-    setLoading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', modelFile)
-
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const data = await response.json()
-      setResult(data)
-    } catch (error) {
-      setResult({
-        success: false,
-        error: 'Failed to analyze model. Please try again.',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const formatFileSize = (bytes: number | undefined) => {
-    if (typeof bytes === 'undefined') return 'N/A'
-    return `${(bytes / 1024 / 1024).toFixed(2)} MB`
-  }
-
+export default function ViewerLandingPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-16">
-        <div className="flex items-center mb-8">
-          <Link
+        <div className="mb-8 flex items-center">
+          <Link 
             href="/"
-            className="text-blue-400 hover:text-blue-300 mr-4"
+            className="mr-4 text-blue-400 hover:text-blue-300"
           >
-            ← Back
+            ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold">Model Viewer & Analyzer</h1>
+          <h1 className="text-4xl font-bold">Model Viewer</h1>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Viewer Section */}
-          <div className="bg-gray-800 rounded-lg p-8 shadow-lg">
-            <div className="mb-6">
-              <label className="block text-lg mb-2">Upload Model</label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".gltf,.glb"
-                onChange={handleFileChange}
-                className="w-full bg-gray-700 rounded p-2"
-              />
-            </div>
-
-            {modelUrl && (
-              <div className="relative aspect-square w-full bg-gray-900 rounded-lg overflow-hidden">
-                <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }}>
-                  <Stage environment="city" intensity={0.5}>
-                    <Model url={modelUrl} />
-                  </Stage>
-                  <OrbitControls autoRotate />
-                </Canvas>
-              </div>
-            )}
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Info Section */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4">About the Viewer</h2>
+            <p className="text-gray-300 mb-4">
+              Our Model Viewer tool provides detailed analysis and statistics for your 3D models, helping you understand their structure and complexity.
+            </p>
+            <h3 className="text-xl font-semibold mb-2">Features</h3>
+            <ul className="list-disc list-inside text-gray-300 mb-4">
+              <li>Support for GLTF/GLB and SVG</li>
+              <li>Detailed geometry analysis</li>
+              <li>Model statistics</li>
+              <li>Performance metrics</li>
+            </ul>
+            <Link 
+              href="/viewer/use"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold"
+            >
+              Start Analyzing
+            </Link>
           </div>
 
-          {/* Analysis Section */}
-          <div className="bg-gray-800 rounded-lg p-8 shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4">Model Analysis</h2>
-            
-            {loading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                <p>Analyzing model...</p>
+          {/* Usage Guide */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4">How to Use</h2>
+            <div className="space-y-4 text-gray-300">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">1. Upload Model</h3>
+                <p>Upload your GLTF, GLB, or SVG file for analysis.</p>
               </div>
-            ) : result ? (
-              result.success ? (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Statistics</h3>
-                    <dl className="grid grid-cols-2 gap-4">
-                      <div>
-                        <dt className="text-gray-400">Vertices</dt>
-                        <dd>{result.data?.stats.vertices.toLocaleString() ?? 'N/A'}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-gray-400">Faces</dt>
-                        <dd>{result.data?.stats.faces.toLocaleString() ?? 'N/A'}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-gray-400">Materials</dt>
-                        <dd>{result.data?.stats.materials ?? 'N/A'}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-gray-400">Textures</dt>
-                        <dd>{result.data?.stats.textures ?? 'N/A'}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-gray-400">Animations</dt>
-                        <dd>{result.data?.stats.animations ?? 'N/A'}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-gray-400">File Size</dt>
-                        <dd>{formatFileSize(result.data?.stats.fileSize)}</dd>
-                      </div>
-                    </dl>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Performance</h3>
-                    <p className="text-gray-300">{result.data?.analysis.performance ?? 'No performance data available'}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Recommendations</h3>
-                    <ul className="list-disc list-inside text-gray-300">
-                      {result.data?.analysis.recommendations.map((rec, index) => (
-                        <li key={index}>{rec}</li>
-                      )) ?? <li>No recommendations available</li>}
-                    </ul>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-red-900/50 text-red-200 rounded p-4">
-                  {result.error}
-                </div>
-              )
-            ) : (
-              <p className="text-gray-400">
-                Upload a model to see detailed analysis
-              </p>
-            )}
+              <div>
+                <h3 className="text-xl font-semibold mb-2">2. Select Format</h3>
+                <p>Choose the correct format of your uploaded model.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">3. Analyze</h3>
+                <p>Run the analysis to get detailed information about your model:</p>
+                <ul className="list-disc list-inside ml-4 mt-2">
+                  <li>Vertex and face counts</li>
+                  <li>Material usage</li>
+                  <li>File size metrics</li>
+                  <li>Structure details</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">4. Review</h3>
+                <p>Examine the analysis results to understand your model better.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

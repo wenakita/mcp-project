@@ -1,184 +1,70 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 
-interface OptimizationResult {
-  success: boolean
-  data?: {
-    optimizedGltf: string
-    stats: {
-      originalSize: number
-      optimizedSize: number
-      compressionRatio: number
-      vertexCount: number
-      faceCount: number
-    }
-  }
-  error?: string
-}
-
-export default function OptimizerPage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<OptimizationResult | null>(null)
-  const [settings, setSettings] = useState({
-    compressionLevel: 7,
-    quantizationBits: 14,
-    simplificationRatio: 1.0,
-  })
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
-    if (selectedFile && selectedFile.name.toLowerCase().endsWith('.gltf')) {
-      setFile(selectedFile)
-      setResult(null)
-    } else {
-      alert('Please select a GLTF file')
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!file) return
-
-    setLoading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('settings', JSON.stringify(settings))
-
-      const response = await fetch('/api/optimize', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const data = await response.json()
-      setResult(data)
-    } catch (error) {
-      setResult({
-        success: false,
-        error: 'Failed to optimize file. Please try again.',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
+export default function OptimizerLandingPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-16">
-        <div className="flex items-center mb-8">
-          <Link
+        <div className="mb-8 flex items-center">
+          <Link 
             href="/"
-            className="text-blue-400 hover:text-blue-300 mr-4"
+            className="mr-4 text-blue-400 hover:text-blue-300"
           >
-            ← Back
+            ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold">GLTF Optimizer</h1>
+          <h1 className="text-4xl font-bold">Model Optimizer</h1>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-8 shadow-lg">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-lg mb-2">Upload GLTF File</label>
-              <input
-                type="file"
-                accept=".gltf"
-                onChange={handleFileChange}
-                className="w-full bg-gray-700 rounded p-2"
-              />
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div>
-                <label className="block text-lg mb-2">Compression Level</label>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value={settings.compressionLevel}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    compressionLevel: Number(e.target.value)
-                  })}
-                  className="w-full"
-                />
-                <span className="text-sm text-gray-300">
-                  Level: {settings.compressionLevel}
-                </span>
-              </div>
-
-              <div>
-                <label className="block text-lg mb-2">Quantization Bits</label>
-                <input
-                  type="range"
-                  min="8"
-                  max="16"
-                  value={settings.quantizationBits}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    quantizationBits: Number(e.target.value)
-                  })}
-                  className="w-full"
-                />
-                <span className="text-sm text-gray-300">
-                  Bits: {settings.quantizationBits}
-                </span>
-              </div>
-
-              <div>
-                <label className="block text-lg mb-2">Simplification Ratio</label>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="1"
-                  step="0.1"
-                  value={settings.simplificationRatio}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    simplificationRatio: Number(e.target.value)
-                  })}
-                  className="w-full"
-                />
-                <span className="text-sm text-gray-300">
-                  Ratio: {settings.simplificationRatio}
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={!file || loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded disabled:opacity-50"
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Info Section */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4">About the Optimizer</h2>
+            <p className="text-gray-300 mb-4">
+              Our Model Optimizer tool helps you reduce file size and improve performance of your 3D models while maintaining visual quality.
+            </p>
+            <h3 className="text-xl font-semibold mb-2">Features</h3>
+            <ul className="list-disc list-inside text-gray-300 mb-4">
+              <li>Draco compression support</li>
+              <li>Mesh simplification</li>
+              <li>Optimized for web delivery</li>
+              <li>Maintains model fidelity</li>
+            </ul>
+            <Link 
+              href="/optimizer/use"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold"
             >
-              {loading ? 'Optimizing...' : 'Optimize GLTF'}
-            </button>
-          </form>
+              Start Optimizing
+            </Link>
+          </div>
 
-          {result && (
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Result</h2>
-              {result.success ? (
-                <div className="bg-gray-700 rounded p-4">
-                  <pre className="whitespace-pre-wrap">
-                    {JSON.stringify(result.data, null, 2)}
-                  </pre>
-                  <a
-                    href={result.data?.optimizedGltf}
-                    download="optimized.gltf"
-                    className="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                  >
-                    Download Optimized GLTF
-                  </a>
-                </div>
-              ) : (
-                <div className="bg-red-900/50 text-red-200 rounded p-4">
-                  {result.error}
-                </div>
-              )}
+          {/* Usage Guide */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4">How to Use</h2>
+            <div className="space-y-4 text-gray-300">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">1. Prepare Your Model</h3>
+                <p>Have your GLTF/GLB file ready for optimization.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">2. Choose Options</h3>
+                <p>Select which optimizations to apply:</p>
+                <ul className="list-disc list-inside ml-4 mt-2">
+                  <li>Draco compression for geometry</li>
+                  <li>Mesh simplification for reduced complexity</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">3. Optimize</h3>
+                <p>Run the optimization process and download your optimized model.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">4. Verify</h3>
+                <p>Check the optimization results and file size reduction.</p>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>
